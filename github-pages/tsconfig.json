@@ -17,6 +17,9 @@
       "next/navigation": ["./src/shims/next-navigation.ts"],
       "next/script": ["./src/shims/next-script.tsx"],
       "@/lib/media-base": ["./src/shims/media-base.ts"],
+      "@/app/admin/actions/*": ["./src/admin/actions/*"],
+      "@/components/admin/photo-upload": ["./src/admin/photo-upload.ts"],
+      "server-only": ["./src/shims/empty.ts"],
       "@/*": ["../src/*"]
     }
   },

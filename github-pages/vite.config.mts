@@ -26,6 +26,10 @@ export default defineConfig({
       { find: /^next\/navigation$/, replacement: r("src/shims/next-navigation.ts") },
       { find: /^next\/script$/, replacement: r("src/shims/next-script.tsx") },
       { find: /^@\/lib\/media-base$/, replacement: r("src/shims/media-base.ts") },
+      // Back office: ações do servidor substituídas por versões que usam a API do Supabase
+      { find: /^@\/app\/admin\/actions\/(.*)$/, replacement: `${r("src/admin/actions")}/$1.ts` },
+      { find: /^@\/components\/admin\/photo-upload$/, replacement: r("src/admin/photo-upload.ts") },
+      { find: /^server-only$/, replacement: r("src/shims/empty.ts") },
       { find: /^@\//, replacement: `${r("../src")}/` },
     ],
   },

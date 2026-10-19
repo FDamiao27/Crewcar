@@ -63,6 +63,25 @@ function groupBy<T extends Row>(rows: T[]): Map<string, T[]> {
   return map;
 }
 
+const PREVIEW_KEY = "cc-preview";
+
+export function isPreview(): boolean {
+  try {
+    return sessionStorage.getItem(PREVIEW_KEY) === "1";
+  } catch {
+    return false;
+  }
+}
+
+export function setPreview(on: boolean) {
+  try {
+    if (on) sessionStorage.setItem(PREVIEW_KEY, "1");
+    else sessionStorage.removeItem(PREVIEW_KEY);
+  } catch {
+    /* armazenamento indisponível */
+  }
+}
+
 export async function loadShowroom(): Promise<Showroom> {
   const [content, pages, vehicles, photos, equipment, links, promotions, history] = await Promise.all([
     fetchAll("site_content", "key,published"),
@@ -104,9 +123,18 @@ export async function loadShowroom(): Promise<Showroom> {
     };
   });
 
+  // Pré-visualização de rascunhos (apenas com sessão de administrador; a base de dados
+  // só devolve o rascunho a administradores autenticados)
+  let contentDoc = byKey.content;
+  if (isPreview()) {
+    const { adminDb } = await import("./admin/core");
+    const { data } = await adminDb.from("site_content").select("draft").eq("key", "content").maybeSingle();
+    if (data?.draft) contentDoc = data.draft;
+  }
+
   return {
     settings: parseSettings(byKey.settings),
-    content: parseContent(byKey.content),
+    content: parseContent(contentDoc),
     pages: pages as unknown as PublicPage[],
     vehicles: details,
   };

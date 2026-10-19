@@ -1,5 +1,5 @@
-import { RotateCcw } from "lucide-react";
-import { useEffect, useLayoutEffect, type ReactNode } from "react";
+import { Eye, RotateCcw } from "lucide-react";
+import { lazy, Suspense, useEffect, useLayoutEffect, type ReactNode } from "react";
 import Link from "next/link";
 import { Outlet, Route, Routes, useLocation } from "react-router";
 import { CookieConsent } from "@/components/site/consent";
@@ -17,6 +17,8 @@ import { HomePage } from "./pages/home";
 import { LegalPage } from "./pages/legal";
 import { NotFoundPage } from "./pages/not-found";
 import { VehiclePage } from "./pages/vehicle";
+import { withBase } from "./config";
+import { isPreview, setPreview } from "./data";
 import { ShowroomProvider, useShowroomState } from "./showroom";
 
 function ScrollToTop() {
@@ -86,6 +88,15 @@ function Layout() {
       >
         Saltar para o conteúdo
       </a>
+      {isPreview() && (
+        <div className="fixed inset-x-0 bottom-0 z-[95] flex items-center justify-center gap-3 border-t border-warn/40 bg-ink-2/95 px-4 py-2.5 text-xs text-soft backdrop-blur">
+          <Eye className="size-4 text-warn" aria-hidden="true" />
+          <span>Pré-visualização do rascunho — os visitantes continuam a ver a versão publicada.</span>
+          <a href={withBase("/api/preview/sair")} className="font-semibold text-white underline underline-offset-2">
+            Sair
+          </a>
+        </div>
+      )}
       <div className={banners.length ? "[--header-offset:6.5rem] md:[--header-offset:7rem]" : "[--header-offset:4rem] md:[--header-offset:4.5rem]"}>
         <SiteHeader
           logo={<Logo brandName={settings.brandName} logo={settings.logo} />}
@@ -119,7 +130,38 @@ function Layout() {
   );
 }
 
+const AdminApp = lazy(() => import("./admin/app"));
+
+/** Ativa ou desativa a pré-visualização de rascunhos e volta ao website. */
+function PreviewSwitch({ on }: { on: boolean }) {
+  useEffect(() => {
+    const target = new URLSearchParams(window.location.search).get("destino") ?? "/";
+    const safe = /^\/(?!\/)[\w\-/?=&%.]*$/.test(target) && !target.startsWith("/admin") ? target : "/";
+    setPreview(on);
+    window.location.replace(withBase(on ? safe : "/"));
+  }, [on]);
+  return null;
+}
+
 export function App() {
+  return (
+    <Routes>
+      <Route
+        path="admin/*"
+        element={
+          <Suspense fallback={null}>
+            <AdminApp />
+          </Suspense>
+        }
+      />
+      <Route path="api/admin/preview" element={<PreviewSwitch on />} />
+      <Route path="api/preview/sair" element={<PreviewSwitch on={false} />} />
+      <Route path="*" element={<Showroom />} />
+    </Routes>
+  );
+}
+
+function Showroom() {
   return (
     <ShowroomProvider>
       <ScrollToTop />

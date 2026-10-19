@@ -11,6 +11,7 @@ import { Badge, Notice } from "@/components/ui/misc";
 import { inputClass } from "@/components/ui/styles";
 import { useToast } from "@/components/ui/toast";
 import { cn } from "@/lib/cn";
+import { replaceVehiclePhoto, uploadVehiclePhoto } from "@/components/admin/photo-upload";
 
 export type ManagedPhoto = {
   id: string;
@@ -28,26 +29,6 @@ type Upload = { id: string; name: string; preview: string; progress: number; err
 
 const ACCEPT = ["image/jpeg", "image/png", "image/webp", "image/avif"];
 const MAX_BYTES = 15 * 1024 * 1024;
-
-function send(url: string, body: FormData, onProgress: (p: number) => void): Promise<{ ok: boolean; error?: string; errors?: string[] }> {
-  return new Promise((resolve) => {
-    const xhr = new XMLHttpRequest();
-    xhr.open("POST", url);
-    xhr.upload.onprogress = (e) => e.lengthComputable && onProgress(Math.round((e.loaded / e.total) * 100));
-    xhr.onload = () => {
-      let data: { error?: string; errors?: string[] } = {};
-      try {
-        data = JSON.parse(xhr.responseText);
-      } catch {
-        /* resposta vazia */
-      }
-      const err = data.error ?? data.errors?.[0];
-      resolve({ ok: xhr.status >= 200 && xhr.status < 300 && !err, error: err ?? (xhr.status >= 300 ? `Erro ${xhr.status}` : undefined) });
-    };
-    xhr.onerror = () => resolve({ ok: false, error: "Falha de ligação durante o envio." });
-    xhr.send(body);
-  });
-}
 
 export function PhotoManager({ vehicleId, photos, title }: { vehicleId: string; photos: ManagedPhoto[]; title: string }) {
   const router = useRouter();
@@ -78,9 +59,7 @@ export function PhotoManager({ vehicleId, photos, title }: { vehicleId: string; 
     let okCount = 0;
     for (const item of queue) {
       if (item.error) continue;
-      const body = new FormData();
-      body.append("files", item.file);
-      const r = await send(`/api/admin/vehicles/${vehicleId}/photos`, body, (p) =>
+      const r = await uploadVehiclePhoto(vehicleId, item.file, (p) =>
         setUploads((u) => u.map((x) => (x.id === item.id ? { ...x, progress: p } : x))),
       );
       setUploads((u) => u.map((x) => (x.id === item.id ? { ...x, progress: 100, done: true, error: r.ok ? undefined : r.error } : x)));
@@ -290,10 +269,8 @@ export function PhotoManager({ vehicleId, photos, title }: { vehicleId: string; 
             toast("Ficheiro inválido (JPEG, PNG, WebP ou AVIF até 15 MB).", "error");
             return;
           }
-          const body = new FormData();
-          body.append("file", file);
           toast("A substituir fotografia…", "info");
-          const r = await send(`/api/admin/photos/${target}`, body, () => {});
+          const r = await replaceVehiclePhoto(target, file);
           if (r.ok) {
             toast("Fotografia substituída.");
             router.refresh();
