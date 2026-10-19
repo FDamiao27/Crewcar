@@ -14,7 +14,10 @@
     "admin:create": "tsx scripts/create-admin.ts",
     "test": "vitest run",
     "test:e2e": "next build && playwright test",
-    "db:supabase-sql": "tsx scripts/build-supabase-sql.ts"
+    "db:supabase-sql": "tsx scripts/build-supabase-sql.ts",
+    "pages:dev": "vite --config github-pages/vite.config.mts",
+    "pages:build": "vite build --config github-pages/vite.config.mts && cp github-pages/dist/index.html github-pages/dist/404.html",
+    "pages:typecheck": "tsc --noEmit -p github-pages"
   },
   "engines": {
     "node": ">=20.9"
@@ -23,6 +26,7 @@
     "@aws-sdk/client-s3": "^3.1152.0",
     "@fontsource-variable/inter": "^5.3.0",
     "@fontsource-variable/manrope": "^5.3.0",
+    "@supabase/supabase-js": "^2.118.0",
     "bcryptjs": "^3.0.3",
     "lucide-react": "^1.59.0",
     "next": "^16.4.2",
@@ -38,14 +42,18 @@
     "@axe-core/playwright": "^4.14.0",
     "@playwright/test": "^1.64.1",
     "@tailwindcss/postcss": "^4.3.3",
+    "@tailwindcss/vite": "^4.3.3",
     "@types/node": "^26.6.5",
     "@types/papaparse": "^5.5.2",
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
+    "@vitejs/plugin-react": "^6.1.2",
     "dotenv": "^18.0.8",
+    "react-router": "^8.5.0",
     "tailwindcss": "^4.3.3",
     "tsx": "^4.23.15",
     "typescript": "5.9",
+    "vite": "^8.3.4",
     "vitest": "^5.0.5"
   }
 }

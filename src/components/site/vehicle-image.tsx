@@ -1,18 +1,19 @@
 import { CarFront } from "lucide-react";
 import { cn } from "@/lib/cn";
+import { mediaUrl } from "@/lib/media-base";
 
 export type ImageLike = { storageKey: string; variants: number[]; width: number; height: number; altText?: string | null };
 
 export function photoSrc(photo: ImageLike, minWidth = 1024): string {
   const sorted = [...photo.variants].sort((a, b) => a - b);
   const w = sorted.find((v) => v >= minWidth) ?? sorted[sorted.length - 1];
-  return `/media/${photo.storageKey}-${w}.webp`;
+  return mediaUrl(`${photo.storageKey}-${w}.webp`);
 }
 
 export function photoSrcSet(photo: ImageLike): string {
   return [...photo.variants]
     .sort((a, b) => a - b)
-    .map((w) => `/media/${photo.storageKey}-${w}.webp ${w}w`)
+    .map((w) => `${mediaUrl(`${photo.storageKey}-${w}.webp`)} ${w}w`)
     .join(", ");
 }
 

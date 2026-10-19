@@ -13,3 +13,4 @@ next-env.d.ts
 .DS_Store
 tests/e2e/.auth/
 storage-test/
+github-pages/dist/

@@ -13,6 +13,7 @@ import { Markdown } from "@/lib/markdown";
 import { countAvailableVehicles, getFeaturedVehicles, getLatestVehicles, searchCatalog } from "@/lib/queries/public";
 import { getSite } from "@/lib/queries/site";
 import { assetUrl } from "@/lib/site-schema";
+import { mediaUrl } from "@/lib/media-base";
 import { CarFront } from "lucide-react";
 import { formatAddress } from "@/components/site/contact-details";
 import { JsonLd } from "@/components/site/json-ld";
@@ -62,7 +63,7 @@ export default async function HomePage() {
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={assetUrl(heroImage, 1920)}
-              srcSet={heroImage.variants.map((w) => `/media/${heroImage.key}-${w}.webp ${w}w`).join(", ")}
+              srcSet={heroImage.variants.map((w) => `${mediaUrl(`${heroImage.key}-${w}.webp`)} ${w}w`).join(", ")}
               sizes="100vw"
               alt=""
               fetchPriority="high"

@@ -1,6 +1,7 @@
 // Definições e conteúdos editáveis no back office: tipos, valores por omissão e validação.
 // Partilhado entre servidor e cliente (sem dependências de servidor).
 import { z } from "zod";
+import { mediaUrl } from "./media-base";
 
 const text = (max: number) => z.string().trim().max(max, `Máximo de ${max} caracteres.`);
 const optionalUrl = z
@@ -299,5 +300,5 @@ export function whatsappDigits(n: string): string {
 
 export function assetUrl(asset: NonNullable<Asset>, width?: number, ext = "webp"): string {
   const w = width ? asset.variants.reduce((best, v) => (v >= width && v < best ? v : best), Math.max(...asset.variants)) : Math.max(...asset.variants);
-  return `/media/${asset.key}-${w}.${ext}`;
+  return mediaUrl(`${asset.key}-${w}.${ext}`);
 }

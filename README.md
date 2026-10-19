@@ -117,6 +117,15 @@ docker compose exec app npm run admin:create -- --email o.seu@email.pt --name "O
 
 Coloque um proxy HTTPS (Caddy, Nginx, Traefik) à frente da porta 3000 e defina `SITE_URL` com `https://`. Com HTTPS, os cookies de sessão passam a usar o prefixo `__Host-` e a flag `Secure`, e é ativado o HSTS.
 
+### Showroom no GitHub Pages (sem servidor)
+
+O GitHub Pages só aloja ficheiros estáticos. Para isso existe uma versão estática do showroom
+em [`github-pages/`](github-pages/README.md), que lê os dados em tempo real do Supabase e grava os
+pedidos de contacto diretamente na base de dados. O back office continua a ser a aplicação
+Next.js (no seu computador ou alojada), ligada à mesma base de dados.
+
+Endereço: **https://fdamiao27.github.io/Crewcar/** (depois de ativar o GitHub Pages no repositório).
+
 ### Variáveis de ambiente
 
 | Variável | Obrigatória | Descrição |
