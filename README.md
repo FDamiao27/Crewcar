@@ -84,6 +84,8 @@ As viaturas de demonstração têm referências `DEMO-…`, mostram o aviso **"C
    ```
    Se usar o pooler em **modo transação** (porta 6543), defina também `DATABASE_PREPARE=false`.
 
+   **Sem terminal?** Abra no Supabase **SQL Editor → New query**, cole o conteúdo de [`db/supabase-setup.sql`](db/supabase-setup.sql) e carregue em **Run**. Cria todas as tabelas, regras de segurança e dados iniciais (o ficheiro é regenerado com `npm run db:supabase-sql` sempre que houver novas migrações). No fim do ficheiro há um exemplo comentado para criar o primeiro administrador.
+
 ### 2. Armazenamento das fotografias (Supabase Storage)
 
 1. Em **Storage**, crie um bucket **privado** chamado, por exemplo, `crewcar`.
