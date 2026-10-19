@@ -422,6 +422,30 @@ $$;
 
 insert into schema_migrations (name) values ('0002_security.sql') on conflict do nothing;
 
+-- ───────────── 0003_hardening.sql ─────────────
+-- CREW CAR — reforço de segurança (recomendações do Security Advisor do Supabase)
+
+-- search_path fixo nas funções (evita resolução de objetos noutros esquemas)
+alter function f_norm(text) set search_path = pg_catalog, public;
+alter function set_updated_at() set search_path = pg_catalog, public;
+alter function track_price_change() set search_path = pg_catalog, public;
+
+-- A função do trigger de contactos não deve ser invocável diretamente (ex.: API REST /rpc).
+-- Os triggers continuam a executá-la normalmente.
+revoke execute on function log_lead_created() from public;
+do $$
+declare r text;
+begin
+  foreach r in array array['anon', 'authenticated'] loop
+    if exists (select 1 from pg_roles where rolname = r) then
+      execute format('revoke execute on function log_lead_created() from %I', r);
+    end if;
+  end loop;
+end
+$$;
+
+insert into schema_migrations (name) values ('0003_hardening.sql') on conflict do nothing;
+
 -- ───────────── Dados iniciais ─────────────
 insert into site_content (key, draft, published, published_at) values
   ('settings', $json${"brandName":"CREW CAR","tagline":"","logo":null,"favicon":null,"appearance":{"colors":{"ink":"#0B0B0C","ink2":"#111214","graphite":"#202124","metal":"#A3A5A8","soft":"#F4F4F2","white":"#FFFFFF"},"font":"inter"},"contact":{"phone":"","phoneNote":"","email":"","whatsapp":"","address":{"street":"","postalCode":"","city":"","country":"Portugal"},"mapUrl":"","openingHours":""},"social":{"facebook":"","instagram":"","youtube":"","tiktok":"","linkedin":""},"company":{"legalName":"","nif":"","registeredOffice":"","licence":"","complaintsBook":true},"regional":{"currency":"EUR","language":"pt-PT","timezone":"Europe/Lisbon","dateFormat":"DD/MM/AAAA"},"cookies":{"bannerEnabled":true,"message":"Utilizamos cookies essenciais para o funcionamento do site. Com a sua autorização, utilizamos também cookies de análise para melhorar a experiência."},"analytics":{"provider":"none","plausibleDomain":"","ga4Id":""},"publishing":{"perPage":12,"showReserved":true,"keepSoldPages":true,"similarCount":4,"whatsappMessage":"Olá! Tenho interesse nesta viatura:","allowIndexing":true}}$json$::jsonb, $json${"brandName":"CREW CAR","tagline":"","logo":null,"favicon":null,"appearance":{"colors":{"ink":"#0B0B0C","ink2":"#111214","graphite":"#202124","metal":"#A3A5A8","soft":"#F4F4F2","white":"#FFFFFF"},"font":"inter"},"contact":{"phone":"","phoneNote":"","email":"","whatsapp":"","address":{"street":"","postalCode":"","city":"","country":"Portugal"},"mapUrl":"","openingHours":""},"social":{"facebook":"","instagram":"","youtube":"","tiktok":"","linkedin":""},"company":{"legalName":"","nif":"","registeredOffice":"","licence":"","complaintsBook":true},"regional":{"currency":"EUR","language":"pt-PT","timezone":"Europe/Lisbon","dateFormat":"DD/MM/AAAA"},"cookies":{"bannerEnabled":true,"message":"Utilizamos cookies essenciais para o funcionamento do site. Com a sua autorização, utilizamos também cookies de análise para melhorar a experiência."},"analytics":{"provider":"none","plausibleDomain":"","ga4Id":""},"publishing":{"perPage":12,"showReserved":true,"keepSoldPages":true,"similarCount":4,"whatsappMessage":"Olá! Tenho interesse nesta viatura:","allowIndexing":true}}$json$::jsonb, now()),
