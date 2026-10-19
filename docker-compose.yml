@@ -1,0 +1,37 @@
+# Execução completa num servidor próprio: aplicação + PostgreSQL + volume para fotografias.
+# Antes de usar, crie um ficheiro .env com POSTGRES_PASSWORD, SITE_URL e APP_SECRET.
+services:
+  db:
+    image: postgres:16
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: crewcar
+      POSTGRES_USER: crewcar
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Defina POSTGRES_PASSWORD no ficheiro .env}
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U crewcar -d crewcar"]
+      interval: 5s
+      retries: 10
+
+  app:
+    build: .
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgres://crewcar:${POSTGRES_PASSWORD}@db:5432/crewcar
+      SITE_URL: ${SITE_URL:?Defina SITE_URL no ficheiro .env}
+      APP_SECRET: ${APP_SECRET:?Defina APP_SECRET no ficheiro .env}
+      STORAGE_DRIVER: local
+      STORAGE_LOCAL_DIR: /data/storage
+    ports:
+      - "3000:3000"
+    volumes:
+      - storage:/data/storage
+
+volumes:
+  db-data:
+  storage:

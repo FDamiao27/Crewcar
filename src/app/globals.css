@@ -1,0 +1,171 @@
+@import "tailwindcss";
+
+/* ───────────── Identidade visual CREW CAR ─────────────
+   As cores podem ser ajustadas no back office (Definições → Aparência);
+   os valores abaixo são a paleta oficial por omissão. */
+:root {
+  --cc-ink: #0b0b0c;
+  --cc-ink-2: #111214;
+  --cc-graphite: #202124;
+  --cc-metal: #a3a5a8;
+  --cc-soft: #f4f4f2;
+  --cc-white: #ffffff;
+  --cc-font: "Inter Variable", "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  color-scheme: dark;
+}
+:root[data-font="manrope"] {
+  --cc-font: "Manrope Variable", "Manrope", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+@theme inline {
+  --color-ink: var(--cc-ink);
+  --color-ink-2: var(--cc-ink-2);
+  --color-graphite: var(--cc-graphite);
+  --color-metal: var(--cc-metal);
+  --color-soft: var(--cc-soft);
+  --color-white: var(--cc-white);
+  --color-line: color-mix(in oklab, var(--cc-white) 10%, transparent);
+  --color-line-strong: color-mix(in oklab, var(--cc-white) 18%, transparent);
+  --color-ok: #8fbf9f;
+  --color-warn: #d8b76a;
+  --color-danger: #e39191;
+  --font-sans: var(--cc-font);
+  --font-display: var(--cc-font);
+}
+
+@theme {
+  --tracking-brand: 0.32em;
+  --tracking-eyebrow: 0.22em;
+  --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
+  --animate-fade-up: fade-up 0.7s var(--ease-out-soft) both;
+  --animate-fade-in: fade-in 0.4s ease-out both;
+  --animate-toast-in: toast-in 0.35s var(--ease-out-soft) both;
+
+  @keyframes fade-up {
+    from { opacity: 0; transform: translateY(14px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fade-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  @keyframes toast-in {
+    from { opacity: 0; transform: translateY(8px) scale(0.98); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+  }
+}
+
+@layer base {
+  html {
+    background: var(--cc-ink);
+    color: var(--cc-soft);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    scroll-behavior: smooth;
+  }
+  body {
+    min-height: 100dvh;
+    background: var(--cc-ink);
+    font-family: var(--cc-font);
+    font-feature-settings: "cv11", "ss01";
+  }
+  ::selection {
+    background: color-mix(in oklab, var(--cc-white) 85%, transparent);
+    color: var(--cc-ink);
+  }
+  :focus-visible {
+    outline: 2px solid var(--cc-white);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+  input, select, textarea, button { font: inherit; }
+  [hidden] { display: none !important; }
+}
+
+/* Utilitários de identidade */
+@utility eyebrow {
+  font-size: 0.6875rem;
+  line-height: 1rem;
+  font-weight: 600;
+  letter-spacing: var(--tracking-eyebrow);
+  text-transform: uppercase;
+  color: var(--cc-metal);
+}
+@utility display-title {
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.02;
+  text-transform: uppercase;
+}
+@utility price {
+  font-variant-numeric: tabular-nums;
+  font-weight: 650;
+  letter-spacing: -0.01em;
+}
+@utility tabular {
+  font-variant-numeric: tabular-nums;
+}
+@utility surface {
+  background: linear-gradient(180deg, color-mix(in oklab, var(--cc-white) 3%, var(--cc-ink-2)), var(--cc-ink-2));
+  border: 1px solid color-mix(in oklab, var(--cc-white) 8%, transparent);
+}
+@utility placeholder-plate {
+  background:
+    radial-gradient(120% 80% at 50% 110%, color-mix(in oklab, var(--cc-white) 7%, transparent), transparent 60%),
+    linear-gradient(160deg, var(--cc-graphite), var(--cc-ink-2) 55%, var(--cc-ink));
+}
+@utility hero-backdrop {
+  background:
+    radial-gradient(70% 60% at 75% 30%, color-mix(in oklab, var(--cc-white) 6%, transparent), transparent 70%),
+    radial-gradient(50% 50% at 10% 90%, color-mix(in oklab, var(--cc-metal) 8%, transparent), transparent 70%),
+    linear-gradient(180deg, var(--cc-ink-2), var(--cc-ink));
+}
+
+/* Texto longo (páginas legais, descrições) */
+.prose-cc {
+  color: color-mix(in oklab, var(--cc-soft) 88%, transparent);
+  line-height: 1.75;
+  font-size: 0.975rem;
+}
+.prose-cc > * + * { margin-top: 1em; }
+.prose-cc h2 { color: var(--cc-white); font-size: 1.25rem; font-weight: 650; margin-top: 2em; letter-spacing: -0.01em; }
+.prose-cc h3 { color: var(--cc-white); font-size: 1.05rem; font-weight: 650; margin-top: 1.6em; }
+.prose-cc h4 { color: var(--cc-white); font-weight: 600; margin-top: 1.4em; }
+.prose-cc ul { list-style: disc; padding-left: 1.25rem; }
+.prose-cc ol { list-style: decimal; padding-left: 1.25rem; }
+.prose-cc li + li { margin-top: 0.35em; }
+.prose-cc a { color: var(--cc-white); text-decoration: underline; text-underline-offset: 3px; text-decoration-color: var(--cc-metal); }
+.prose-cc a:hover { text-decoration-color: var(--cc-white); }
+.prose-cc strong { color: var(--cc-white); font-weight: 600; }
+
+/* Barra de rolagem discreta */
+* { scrollbar-width: thin; scrollbar-color: color-mix(in oklab, var(--cc-white) 18%, transparent) transparent; }
+
+/* Respeito pelas preferências de redução de movimento */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+/* Controlos de formulário com ícones em SVG embutido */
+.cc-select {
+  appearance: none;
+  padding-right: 2.25rem;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' fill='none' stroke='%23A3A5A8' stroke-width='1.5'%3E%3Cpath d='M2.5 4.5 6 8l3.5-3.5'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.85rem center;
+  background-size: 12px;
+}
+.cc-select option { background: var(--cc-ink-2); color: var(--cc-soft); }
+.cc-check:checked {
+  background-color: var(--cc-white);
+  border-color: var(--cc-white);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%230B0B0C' stroke-width='2.2'%3E%3Cpath d='M3.5 8.5 6.5 11.5 12.5 4.5'/%3E%3C/svg%3E");
+  background-position: center;
+  background-repeat: no-repeat;
+}
