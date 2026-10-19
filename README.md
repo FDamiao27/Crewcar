@@ -124,7 +124,7 @@ em [`github-pages/`](github-pages/README.md), que lê os dados em tempo real do 
 pedidos de contacto diretamente na base de dados. O back office continua a ser a aplicação
 Next.js (no seu computador ou alojada), ligada à mesma base de dados.
 
-Endereço: **https://fdamiao27.github.io/Crewcar/** (depois de ativar o GitHub Pages no repositório).
+Endereço: **https://crew-car.pt/** (domínio próprio, depois de ativar o GitHub Pages no repositório e de configurar o DNS — ver [`github-pages/README.md`](github-pages/README.md)).
 
 ### Variáveis de ambiente
 

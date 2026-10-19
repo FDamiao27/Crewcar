@@ -17,7 +17,7 @@ const r = (p: string) => path.resolve(here, p);
 
 export default defineConfig({
   root: here,
-  base: process.env.PAGES_BASE ?? "/Crewcar/",
+  base: process.env.PAGES_BASE ?? "/",
   publicDir: r("public"),
   plugins: [react(), tailwindcss()],
   resolve: {
